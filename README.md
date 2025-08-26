@@ -33,7 +33,21 @@ setup-kiro-env-auto.bat
 - 安装所有项目依赖
 - 配置pip和相关工具
 
-#### 3. 验证安装
+#### 3. Kiro客户端配置（可选）
+
+如果你需要使用Kiro客户端，可以运行：
+```bash
+# 右键以管理员身份运行
+kiro.bat
+```
+
+这个脚本会自动：
+- 创建 `data` 目录用于存储配置
+- 将 `.kiro` 和 `.aws` 目录迁移到项目目录
+- 创建符号链接，保持系统兼容性
+- 启动Kiro客户端
+
+#### 4. 验证安装
 ```bash
 conda activate kiro
 python --version  # 应该显示 Python 3.11.x
@@ -52,19 +66,33 @@ pip install -r requirements.txt
 
 ## 快速启动
 
-### 方式一：一键启动（Windows推荐）
+### 方式一：完整启动流程（Windows推荐）
 
-确保已登录Kiro，然后双击运行：
+#### 步骤1：启动Kiro客户端（首次使用）
+```bash
+# 右键以管理员身份运行，配置Kiro环境
+kiro.bat
 ```
+
+#### 步骤2：启动API服务
+```bash
+# 双击运行，启动Ki2API服务
 start-kiro-router.bat
 ```
 
-这个脚本会自动：
+`start-kiro-router.bat` 会自动：
 - 激活conda环境
 - 读取Kiro token配置
 - 启动API服务
 
-### 方式二：手动启动
+### 方式二：仅启动API服务
+
+如果已经配置好Kiro环境，直接运行：
+```bash
+start-kiro-router.bat
+```
+
+### 方式三：手动启动
 
 ```bash
 # 激活环境
@@ -75,11 +103,38 @@ conda activate kiro  # Windows
 python app.py
 ```
 
-### 方式三：Docker启动
+### 方式四：Docker启动
 
 ```bash
 docker-compose up -d
 ```
+
+## Kiro客户端配置详解
+
+### kiro.bat 脚本功能
+
+`kiro.bat` 是一个智能配置脚本，主要功能包括：
+
+1. **数据迁移**：将用户目录下的 `.kiro` 和 `.aws` 文件夹迁移到项目的 `data` 目录
+2. **符号链接**：创建符号链接，使系统仍能正常访问配置文件
+3. **便携化**：让Kiro配置与项目绑定，便于项目迁移和管理
+4. **自动启动**：配置完成后自动启动Kiro客户端
+
+### 工作原理
+
+```
+用户目录                    项目目录
+%USERPROFILE%\.kiro   →    ki2api\data\.kiro (实际文件)
+%USERPROFILE%\.aws    →    ki2api\data\.aws  (实际文件)
+       ↑                           ↑
+   符号链接                    真实数据
+```
+
+### 使用场景
+
+- **首次使用**：自动迁移现有配置
+- **项目迁移**：配置文件跟随项目一起移动
+- **多环境管理**：不同项目使用独立的Kiro配置
 
 ## Token配置
 
@@ -88,6 +143,9 @@ docker-compose up -d
 服务会自动从以下位置读取token：
 - **Windows**: `%USERPROFILE%\.aws\sso\cache\kiro-auth-token.json`
 - **macOS/Linux**: `~/.aws/sso/cache/kiro-auth-token.json`
+
+运行 `kiro.bat` 后，实际文件位置为：
+- **项目目录**: `ki2api\data\.aws\sso\cache\kiro-auth-token.json`
 
 只需确保已登录Kiro即可，无需手动配置。
 
@@ -271,17 +329,23 @@ uvicorn app:app --reload --host 0.0.0.0 --port 8989
    - 检查Miniconda安装路径是否正确
    - 确保网络连接正常
 
-2. **Token读取失败**
+2. **Kiro客户端配置问题**
+   - 确保以管理员身份运行 `kiro.bat`
+   - 检查是否有足够的磁盘空间进行数据迁移
+   - 如果符号链接创建失败，检查Windows版本是否支持符号链接
+
+3. **Token读取失败**
    - 确保已登录Kiro (https://kiro.dev)
+   - 运行 `kiro.bat` 确保配置文件正确迁移
    - 检查token文件是否存在：`%USERPROFILE%\.aws\sso\cache\kiro-auth-token.json`
    - 尝试重新登录Kiro
 
-3. **服务启动失败**
+4. **服务启动失败**
    - 检查端口8989是否被占用
    - 确认conda环境已正确激活
    - 查看错误日志定位问题
 
-4. **API返回401**
+5. **API返回401**
    - 确认使用了正确的API密钥：`ki2api-key-2024`
    - 检查token是否有效或过期
 
@@ -309,12 +373,16 @@ conda env remove -n kiro
 ki2api/
 ├── app.py                    # 主应用文件
 ├── token_reader.py           # Token读取工具
-├── start-kiro-router.bat     # 一键启动脚本（Windows）
+├── kiro.bat                  # Kiro客户端配置脚本（Windows）
+├── start-kiro-router.bat     # API服务启动脚本（Windows）
 ├── setup-kiro-env-auto.bat   # 环境配置脚本（Windows）
 ├── requirements.txt          # Python依赖
 ├── Dockerfile               # Docker镜像定义
 ├── docker-compose.yml       # Docker Compose配置
 ├── entrypoint.sh           # Docker入口脚本
+├── data/                    # Kiro配置数据目录（运行kiro.bat后生成）
+│   ├── .kiro/              # Kiro配置文件
+│   └── .aws/               # AWS配置文件
 ├── huggingface/            # HuggingFace版本
 │   └── ki2api/
 │       ├── app.py          # HF版本应用文件
