@@ -91,7 +91,7 @@ coverage.xml
 # 项目特定
 test_token_reading.py
 setup-kiro-env-auto.bat
-start-kiro-router.bat
+
 
 # 文档和说明 (可选，根据需要调整)
 # 安装说明.md
