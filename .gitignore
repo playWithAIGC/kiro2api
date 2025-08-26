@@ -1,0 +1,97 @@
+# Python 相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虚拟环境
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.virtualenv/
+
+# IDE 和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker 相关
+docker.log
+*.log
+
+# 敏感信息和配置
+.env
+.env.local
+.env.*.local
+config.json
+secrets.json
+
+# Token 和认证文件 (敏感信息)
+*token*.json
+*auth*.json
+*.pem
+*.key
+*.crt
+
+# 测试和临时文件
+test/
+tests/__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# 项目特定
+test_token_reading.py
+setup-kiro-env-auto.bat
+start-kiro-router.bat
+
+# 文档和说明 (可选，根据需要调整)
+# 安装说明.md
